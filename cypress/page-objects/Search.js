@@ -9,6 +9,10 @@ class SearchPage {
   poolCheckbox = '[data-testid="filterItem-facilities-checkbox-amenities-7"] span:nth-child(1)';
   showStaysButton = '[data-testid="more-filters-modal-submit-button"]';
   listItem = '[class="_gjfol0"]';
+  listItemName = '[class="_bzh5lkq"]';
+  listItemPrice = '[class="_1klfbd5m"]';
+  mapItem = 'div:nth-child(4) > div:nth-child(1) > div > button > div > div';
+  mapPopupInfo = '[class="_1x0fg6n"] div';
 }
 
 export default SearchPage;
