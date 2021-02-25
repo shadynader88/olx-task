@@ -1,0 +1,10 @@
+{
+  "defaultCommandTimeout": 30000,
+  "video": false,
+  "videoCompression": false,
+  "viewportWidth": 1400,
+  "viewportHeight": 1600,
+  "env": {
+    "airBnbUrl": "https://www.airbnb.com/"
+  }
+}
