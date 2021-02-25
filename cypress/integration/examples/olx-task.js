@@ -4,11 +4,13 @@ import '@testing-library/cypress/add-commands'
 import moment from "moment-timezone";
 import HomePage from "../../page-objects/Home";
 import SearchPage from "../../page-objects/Search";
+import PropertyPage from "../../page-objects/Property";
 
 describe("Olx Task", () => {
 
   let homePage = new HomePage();
   let searchPage = new SearchPage();
+  let propertyPage = new PropertyPage();
   let todayDate = new Date();
   let startDate = new Date();
   let endDate = new Date();
@@ -37,11 +39,11 @@ describe("Olx Task", () => {
     endMonth = moment(endDate).format("MMM");
     (startMonth === endMonth) ?
       travelPeriod = `${startMonth} ${startDate.getDate()} – ${endDate.getDate()}`
-        : travelPeriod = `${startMonth} ${startDate.getDate()} – ${endMonth} ${endDate.getDate()}`;
-    (startDate.getMonth() > todayDate.getMonth()) ?  nextMonth++ : nextMonth;
-    cy.get(homePage.calendarInput).eq(1 + nextMonth).findByText(startDate.getDate()).click({ force: true });
-    (endDate.getMonth() > startDate.getMonth()) ?  nextMonth++ : nextMonth;
-    cy.get(homePage.calendarInput).eq(1 + nextMonth).findByText(endDate.getDate()).click({ force: true });
+      : travelPeriod = `${startMonth} ${startDate.getDate()} – ${endMonth} ${endDate.getDate()}`;
+    (startDate.getMonth() > todayDate.getMonth()) ? nextMonth++ : nextMonth;
+    cy.get(homePage.calendarInput).eq(1 + nextMonth).findByText(startDate.getDate()).click({force: true});
+    (endDate.getMonth() > startDate.getMonth()) ? nextMonth++ : nextMonth;
+    cy.get(homePage.calendarInput).eq(1 + nextMonth).findByText(endDate.getDate()).click({force: true});
     cy.get(homePage.addGuestInput).click();
     cy.get(homePage.increaseAdultsButton).click();
     cy.get(homePage.increaseAdultsButton).click();
@@ -55,5 +57,31 @@ describe("Olx Task", () => {
       let numberOfGuests = parseInt($el.text().split(' ')[0]);
       expect(numberOfGuests).to.be.at.least(3);
     });
+  });
+
+  it("Verify that the results and details page match the extra filters", () => {
+    cy.get(searchPage.moreFilters).click();
+    cy.get(searchPage.increaseBedroomsButton).click();
+    cy.get(searchPage.increaseBedroomsButton).click();
+    cy.get(searchPage.increaseBedroomsButton).click();
+    cy.get(searchPage.increaseBedroomsButton).click();
+    cy.get(searchPage.increaseBedroomsButton).click();
+    cy.get(searchPage.poolCheckbox).click();
+    cy.get(searchPage.showStaysButton).click();
+    cy.get(searchPage.moreFilters).should("contain.text", "More filters · 2");
+    cy.get(searchPage.infoText).each(($el, index, $list) => {
+      let numberOfBedrooms = parseInt($el.text().split('·')[1].split(' ')[1]);
+      expect(numberOfBedrooms).to.be.at.least(5);
+    });
+    cy.get(searchPage.listItem).eq(0).each((locator) => {
+      cy.wrap(locator)
+        .invoke("removeAttr", "target")
+        .click();
+    });
+    cy.get(propertyPage.amenitiesSection)
+      .should("be.exist")
+      .should("contain.text", "Pool");
+    cy.go("back");
+    cy.go("back");
   });
 });
